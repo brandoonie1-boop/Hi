@@ -1,0 +1,71 @@
+/*
+  Tailwind source for public/styles.css. The compiled file is already included,
+  so you only need this if you change classes in the templates. Rebuild with:
+    npm install      (once; installs Tailwind for building only)
+    npm run css
+*/
+@import "tailwindcss" source(none);
+
+@source "../src";
+@source "../shared";
+@source "../public/*.js";
+
+/* js:hidden, js:flex ... apply only once the page's script has started. */
+@custom-variant js (&:where(.js *));
+
+@theme {
+  /* Plain system fonts: fast, familiar, nothing to download. */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Brand brown, after the Chicago "L" Brown Line. */
+  --color-brand-50: #f8f4f0;
+  --color-brand-100: #efe5dc;
+  --color-brand-200: #dec9b6;
+  --color-brand-300: #c7a588;
+  --color-brand-400: #ac7f5b;
+  --color-brand-500: #91623f;
+  --color-brand-600: #784e32;
+  --color-brand-700: #623e28;
+  --color-brand-800: #4d3121;
+  --color-brand-900: #3c271b;
+  --color-brand-950: #22150e;
+
+  --animate-fade-in: fade-in 240ms ease-out both;
+  --animate-pop-in: pop-in 360ms cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pop-in {
+    0% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+:root {
+  color-scheme: light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

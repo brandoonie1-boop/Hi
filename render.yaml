@@ -1,0 +1,33 @@
+# Render Blueprint. In Render, choose New -> Blueprint and pick this repo:
+# Render sets up the web service from this file and asks you for each
+# setting marked "sync: false" (paste your keys there, never into a chat).
+services:
+  - type: web
+    name: brown-line-site
+    runtime: node
+    # Closest region to Chicago. It can't be changed after the service is created.
+    region: ohio
+    # Free instances sleep when nobody visits. For the live site, switch to a
+    # paid instance type (for example 0.5c-512mb) in the service's settings.
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: BUSINESS_PHONE
+        sync: false
+      - key: BUSINESS_EMAIL
+        sync: false
