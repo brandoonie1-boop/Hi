@@ -276,7 +276,7 @@ on conflict (id) do nothing;
 
 
 -- -----------------------------------------------------------------------------
--- 4. Server-only functions (called by the Next.js API routes with the secret key)
+-- 4. Server-only functions (called by the site's server with the secret key)
 -- -----------------------------------------------------------------------------
 
 -- Creates the rental and its invoice in one transaction and returns the new
@@ -511,6 +511,18 @@ create policy invoices_admin_write on public.invoices
 -- 7. Privileges
 -- -----------------------------------------------------------------------------
 
+-- Supabase normally grants these by default. They're spelled out so the site
+-- also works where those defaults were turned off; row-level security (above)
+-- still decides which rows anyone can see or change.
+grant usage on schema public to authenticated, service_role;
+grant select on table public.profiles to authenticated;
+grant select, insert, update, delete on table public.rentals, public.invoices to authenticated;
+grant all on table public.profiles, public.rentals, public.invoices, public.invoice_counters to service_role;
+grant select on table public.rental_manifest to authenticated, service_role;
+
+-- Row-level security doesn't apply to these, so signed-in users don't get them.
+revoke truncate, references, trigger on table public.profiles, public.rentals, public.invoices, public.invoice_counters from authenticated;
+
 -- Signed-out visitors get nothing.
 revoke all on table public.profiles, public.rentals, public.invoices, public.invoice_counters from anon;
 revoke all on table public.rental_manifest from anon;
@@ -519,8 +531,6 @@ revoke all on table public.rental_manifest from anon;
 revoke insert, update on table public.profiles from authenticated;
 grant insert (id, full_name, company_name, phone_number) on table public.profiles to authenticated;
 grant update (full_name, company_name, phone_number) on table public.profiles to authenticated;
-
-grant select on table public.rental_manifest to authenticated;
 
 -- Functions: lock down everything that isn't meant to be called from a browser.
 revoke all on function public.next_invoice_id() from public, anon, authenticated;
