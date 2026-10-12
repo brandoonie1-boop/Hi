@@ -16,6 +16,14 @@ export class StripeError extends Error {
 
 const apiBase = () => (process.env.STRIPE_API_BASE || "https://api.stripe.com").replace(/\/$/, "");
 
+/**
+ * The Stripe API version this code is written for. Pinning it means the site
+ * keeps working the same way even if the account's default version is
+ * upgraded later. (Newer versions are phasing out payment_method_types.)
+ * The Stripe webhook endpoint uses this same version.
+ */
+export const STRIPE_API_VERSION = "2025-03-31.basil";
+
 /** Stripe's form encoding: metadata[invoice_id]=..., payment_method_types[0]=card */
 function encodeForm(params, prefix = "", out = new URLSearchParams()) {
   for (const [key, value] of Object.entries(params || {})) {
@@ -35,7 +43,7 @@ async function request(method, path, params, idempotencyKey) {
   const body = method === "GET" ? undefined : encodeForm(params).toString();
   if (method === "GET") encodeForm(params).forEach((value, key) => url.searchParams.append(key, value));
 
-  const headers = { Authorization: `Bearer ${requireEnv("STRIPE_SECRET_KEY")}` };
+  const headers = { Authorization: `Bearer ${requireEnv("STRIPE_SECRET_KEY")}`, "Stripe-Version": STRIPE_API_VERSION };
   if (body !== undefined) headers["Content-Type"] = "application/x-www-form-urlencoded";
   // Every write gets an idempotency key, so retrying after a network blip is safe.
   if (method !== "GET") headers["Idempotency-Key"] = idempotencyKey || randomUUID();

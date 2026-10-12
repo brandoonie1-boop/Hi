@@ -24,6 +24,7 @@ Booking, payments and dispatch site for a portable toilet rental company in Chic
 - Prices are always calculated on the server from `shared/pricing.js`; the browser only shows a preview.
 - Customer data is read with `asUser(token)` so Supabase row-level security applies. `asService()` (secret key) is only for server-side writes after the server has checked everything.
 - A payment is only recorded after the server confirms it with Stripe (`finalizeInvoicePayment` in `src/payments.js`).
+- The Stripe API version is pinned in `src/stripe.js` (`STRIPE_API_VERSION`), and the Stripe webhook endpoint uses the same version. Change both together.
 - Deposit refunds use a claim on `invoices.deposit_refund_id` so a deposit is never refunded twice or both refunded and kept. Read `depositAction` in `src/pages/admin.js` before changing it.
 - Keys and settings only come from environment variables. Never commit `.env`.
 - The liability terms in `shared/legal.js` are approved wording. If they change, update `LIABILITY_TERMS_VERSION`.
