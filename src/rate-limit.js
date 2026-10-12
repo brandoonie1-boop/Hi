@@ -11,11 +11,15 @@
 const buckets = new Map(); // key -> { count, resetAt }
 
 /**
- * The visitor's IP address. Each proxy in front of the site (Render's,
- * Railway's, Caddy...) adds the address it saw to the end of X-Forwarded-For,
- * so the entry TRUSTED_PROXY_HOPS from the end (default 1) was written by
- * your own host and can't be faked by the visitor. Set TRUSTED_PROXY_HOPS=0
- * when nothing sits in front of the site.
+ * The visitor's IP address. Each proxy in front of the site adds the address
+ * it saw to the end of X-Forwarded-For, so the entry TRUSTED_PROXY_HOPS from
+ * the end was written by your own host and can't be faked by the visitor.
+ * The default of 1 fits a single proxy such as Caddy. Render has three
+ * proxies in front of the site, so render.yaml sets 3. Set it to 0 when
+ * nothing sits in front of the site.
+ *
+ * Too low and every visitor is counted as the same proxy address, so they
+ * all share one limit. Too high and visitors can fake their address.
  */
 export function clientIp(ctx) {
   const setting = Number.parseInt(process.env.TRUSTED_PROXY_HOPS ?? "", 10);

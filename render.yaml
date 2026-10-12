@@ -31,3 +31,8 @@ services:
         sync: false
       - key: BUSINESS_EMAIL
         sync: false
+      # Render puts three proxies in front of the site (checked on the live
+      # site in October 2026), so the visitor's real address is the third
+      # entry from the end of X-Forwarded-For. The sign-in limits rely on it.
+      - key: TRUSTED_PROXY_HOPS
+        value: "3"

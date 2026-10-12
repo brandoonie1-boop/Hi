@@ -27,5 +27,6 @@ Booking, payments and dispatch site for a portable toilet rental company in Chic
 - The Stripe API version is pinned in `src/stripe.js` (`STRIPE_API_VERSION`), and the Stripe webhook endpoint uses the same version. Change both together.
 - Deposit refunds use a claim on `invoices.deposit_refund_id` so a deposit is never refunded twice or both refunded and kept. Read `depositAction` in `src/pages/admin.js` before changing it.
 - Keys and settings only come from environment variables. Never commit `.env`.
+- `TRUSTED_PROXY_HOPS` must match the number of proxies in front of the site. On Render it's 3 (checked on the live site, set in `render.yaml`). Too low and all visitors share one sign-in limit; too high and visitors can fake their address.
 - The liability terms in `shared/legal.js` are approved wording. If they change, update `LIABILITY_TERMS_VERSION`.
 - Customer-facing text is plain and friendly.

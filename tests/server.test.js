@@ -63,6 +63,10 @@ test("visitors are told apart by the address your host's proxy saw", () => {
   assert.equal(clientIp(ctx("")), "10.0.0.9");
   process.env.TRUSTED_PROXY_HOPS = "0";
   assert.equal(clientIp(ctx("6.6.6.6")), "10.0.0.9");
+  // Render's three proxies add the visitor's address and then two of their own.
+  process.env.TRUSTED_PROXY_HOPS = "3";
+  assert.equal(clientIp(ctx("6.6.6.6, 7.7.7.7, 203.0.113.7, 10.1.1.1, 10.2.2.2")), "203.0.113.7");
+  assert.equal(clientIp(ctx("203.0.113.7, 10.1.1.1, 10.2.2.2")), "203.0.113.7");
   delete process.env.TRUSTED_PROXY_HOPS;
 });
 
